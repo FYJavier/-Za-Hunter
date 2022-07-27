@@ -18,17 +18,25 @@ struct ContentView: View {
     @State private var places = [Place]()
     
     var body: some View {
-        Map(
-            coordinateRegion: $region,
-            interactionModes: .all,
-            showsUserLocation: true,
-            userTrackingMode: $userTrackingMode,
-            annotationItems: places) { place in
-                MapPin(coordinate: place.annotation.coordinate)
-            }
-            .onAppear() {
-                performSearch(item: "Pizza")
-            }
+        NavigationView {
+            Map(
+                coordinateRegion: $region,
+                interactionModes: .all,
+                showsUserLocation: true,
+                userTrackingMode: $userTrackingMode,
+                annotationItems: places) { place in
+                    MapAnnotation(coordinate: place.annotation.coordinate) {
+                        NavigationLink(destination: LocationDetailsView(selectedMapItem:   place.mapItem)) {
+                            Image("pizza")
+                        }
+                    }
+                }
+                .onAppear() {
+                    performSearch(item: "Pizza")
+                }
+                .navigationTitle("'Za Hunter")
+                .navigationBarTitleDisplayMode(.inline)
+        }
     }
     
     func performSearch(item: String) {
